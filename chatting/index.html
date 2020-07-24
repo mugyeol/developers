@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <style>
+
+        .wrapper {
+            height: 400px;
+            display: grid;
+            align-items: end;
+            overflow: auto;
+            border: 1px solid lightgray;
+            padding: 10px;
+        }
+
+        .msg {
+        }
+
+        .input_wrapper {
+            margin-top: 30px;
+            height: 50px;
+            /*position: fixed;*/
+            bottom: 0;
+            background-color: white;
+            display: grid;
+            grid-template-columns: 130px 650px 100px;
+            margin-left: 20px;
+
+        }
+
+        table {
+            height: 100%;
+        }
+
+        .mycontainer {
+            margin-left: 350px;
+            margin-right: 350px;
+            margin-top: 30px;
+            margin-bottom: 100px;
+        }
+
+        .innerdiv {
+            margin-right: 15px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="mycontainer">
+    <div class="header">
+        <h1 style="display: inline; margin-right: 530px">DEV CHAT</h1>
+        <button class="btn btn-warning"><a href="http://192.168.202.128:8080/developers/developers.php"
+                                           style="color: black;text-decoration: none;">Developers로 돌아가기</a></button>
+    </div>
+    <div class="wrapper" id="wrapper">
+        <div class="msg">
+
+
+        </div>
+
+    </div>
+
+
+    <div class="input_wrapper">
+        <div class="innerdiv">
+            <input id="receiver" class="form-control" type="text" placeholder="귓속말 (ID)">
+
+        </div>
+        <div class="innerdiv">
+
+            <input id="message-input" class="form-control" type="text">
+
+        </div>
+        <div class="innerdiv">
+
+            <button id="message-button" class="btn btn-success" >SEND</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <script>
+        var scrolled;
+
+        function updateScroll() {
+            if (!scrolled) {
+                var element = document.getElementById("wrapper");
+                element.scrollTop = element.scrollHeight;
+                // console.log("updated")
+            }
+        }
+
+        $("#wrapper").on('scroll', function () {
+            scrolled = true;
+        });
+
+        function whispering(name, message) {
+            var printName = '';
+            printName = name + '로 부터의 귓속말 : ';
+            $('.msg').append('<p style="color: blue;margin-top: 10px; margin-bottom: 0;">' + printName + message + '</p>')
+            scrolled = false;
+            updateScroll();
+        }
+        function msgtoall(name, message) {
+            var printName = '';
+            printName = name + ': ';
+            $('.msg').append('<p style="margin-top: 10px; margin-bottom: 0;">' + printName + message + '</p>')
+            scrolled = false;
+            updateScroll();
+        }
+        function whisperfail(data) {
+
+            $('.msg').append('<p style="color: blue;margin-top: 10px; margin-bottom: 0;">' + data + '님은 로그아웃 하였거나 존재하지 않는 유저 입니다.</p>')
+            scrolled = false;
+            updateScroll();
+        }
+        function logout(data) {
+
+            $('.msg').append('<p style="color: red;margin-top: 10px; margin-bottom: 0;">' + data + '님이 로그아웃 하였습니다</p>')
+            scrolled = false;
+            updateScroll();
+        }
+        function selfconnedtion(data) {
+            $('.msg').append('<p style="margin-top: 10px; margin-bottom: 0;">채팅방에 오신것을 환영합니다. 당신의 채팅 아이디는 : <strong>' +data +'</strong>입니다</p>')
+            scrolled = false;
+            updateScroll();
+        }
+        function broadcastjoining(data) {
+            $('.msg').append('<p style="margin-top: 10px; margin-bottom: 0;"><strong>' +data +'</strong>님이 입장 하셨습니다</p>')
+            scrolled = false;
+            updateScroll();
+        }
+        function makeRandomName() {
+            var name = "";
+            var possible = "abcdefghijklmnopqrstuvwxyz";
+            for (var i = 0; i < 3; i++) {
+                name += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return name;
+        }
+
+            // var name ;
+        $(function () {
+            var name = makeRandomName();
+
+            var socket = io();
+            socket.emit("login", {
+                // name: "ungmo2",
+                name: name
+            });
+
+            socket.on("login", function (data) {
+
+                broadcastjoining(data);
+            });
+            socket.emit("selflogin", {
+                // name: "ungmo2",
+                name: name
+            });
+            socket.on("selflogin", function(data) {
+                // name = data;
+                selfconnedtion(data);
+            });
+            var btn = document.getElementById('message-button');
+            // Send 버튼이 클릭되면
+            btn.onclick = function(e) {
+                e.preventDefault();
+                var $msgForm = $("#message-input");
+                var $receiver = $("#receiver");
+
+                if ($receiver.val() === ""){
+                    $receiver.val('all');
+                }
+                // 서버로 메시지를 전송한다.
+                socket.emit("chat", {
+                    msg: $msgForm.val() ,
+                    to : $receiver.val(),
+                    name : name
+                });
+                console.log($receiver.val());
+                $msgForm.val("");
+                $receiver.val("");
+            };
+            // 서버로부터의 메시지가 수신되면
+            socket.on("chat", function(data) {
+                if (data.to === 'all'){
+
+                    msgtoall(data.name,data.msg);
+
+                }else if (data.to ==='fail') {
+                    whisperfail(data.receiver);
+                }else {
+                    whispering(data.name, data.msg);
+                }
+
+            });
+            socket.on("disconnect", function (data) {
+                logout(data.name);
+
+            });
+
+        });
+
+
+
+
+    </script>
+</div>
+</body>
+</html>

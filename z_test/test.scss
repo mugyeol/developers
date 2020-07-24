@@ -1,0 +1,76 @@
+
+
+
+
+
+$font: "Lato";
+$color: #fff !important;
+
+body {
+    background:url('https://www.dropbox.com/s/7zxkiuyghz7z3ss/black-background.jpg?raw=1');
+}
+
+img{
+    max-width: 80%;
+}
+
+.h1{
+    color: $color;
+    font-weight: bold;
+    font-family: $font;
+}
+
+.navbar-inverse{
+    background-color: #000;
+}
+
+nav ul{
+    list-style-type: none;
+    padding: 0 20px;
+    list-style: none;
+    position: relative;
+}
+
+/* Set Dropdown Display to None*/
+nav ul ul {
+    display: none;
+}
+
+/* Display Dropdown on hover*/
+
+nav ul li:hover > ul {
+    display: block;
+}
+
+ul li{
+    display: inline-block;
+}
+
+ul li a {
+    padding: 20px;
+}
+
+ul li a:hover{
+    text-decoration: none;
+}
+
+nav ul ul {
+    background: #222222;
+    border-radius: 0px;
+    position: absolute;
+}
+
+nav ul ul li{
+    padding: 15px 0;
+}
+
+nav ul ul li a{
+    color: #fff;
+    opacity: .5;
+}
+
+nav ul ul li a:hover{
+    color: #fff;
+    opacity: 1;
+}
+

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/index_style.css">
+  <script src="../../developers/z_test/practice_javascript.js"></script>
+  <script type="text/javascript" src="../../developers/svg-icon-webcomponent-master/build/iconwc.js"></script>
+
+<style>
+
+
+  .glyph-icon svg {
+    width:16px;
+    height:16px;
+  }
+
+  .si-glyph * {
+    fill: red;
+  }
+</style>
+
+    <title></title>
+
+</head>
+<body>
+
+
+<!--<a class="imageAnchor" onclick="" href="#" style="text-decoration: none">-->
+<!--<svg-icon class = "glyph-icon si-glyph"><src  data-toggle = "tooltip" title = "추천" href="../../developers/images/svg/si-glyph-arrow-up.svg"/></svg-icon>-->
+
+  <img src="../../developers/images/up.png" style="fill: blue"/>
+<p style="font-size: 10px;color: lightblue;">ㅁㄴㅇㄹㅂㅈㅁ</p>
+<!--data-placement="top" -->
+       <!--title="추천"  ata-toggle="tooltip" alt="image_not" -->
+<!--</a>-->
+<a href="#"  data-placement="top"   data-toggle="tooltip" title="Some tooltip text!">Hover over me</a>
+
+<script>
+
+        var myImage = document.querySelector('img');
+
+        myImage.onclick = function() {
+            var mySrc = myImage.getAttribute('src');
+            if(mySrc === '../../developers/images/up.png') {
+                myImage.setAttribute ('src','../../developers/images/down.png');
+            } else {
+                myImage.setAttribute ('src','../../developers/images/up.png');
+            }
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.js"></script>
+</body>
+</html>
